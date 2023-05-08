@@ -74,7 +74,7 @@ export default function DisplayCustomer(props) {
                                 <ListItemText primary="4"/>
                             </ListItem>
                         </List> */}
-                        <CustomerTrainings customer={customer}/>
+                        <CustomerTrainings trainings={trainings}/>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setOpen(false)}>Cancel</Button>
