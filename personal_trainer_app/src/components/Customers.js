@@ -20,8 +20,12 @@ export default function Customers() {
     //useEffect calls fetchCustomerData function that sets the data from API to customer state
     useEffect(() => fetchCustomersData(), [])
 
+    const url = new URL('http://traineeapp.azurewebsites.net/api/customers')
+    url.protocol = 'https:'
+
+
     const fetchCustomersData = () => {
-        fetch('https://traineeapp.azurewebsites.net/api/customers')
+        fetch('url.href')
         .then(res => res.json())
         .then(resData => setCustomers(resData.content))
     }
