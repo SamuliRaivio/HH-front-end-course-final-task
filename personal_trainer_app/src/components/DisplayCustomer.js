@@ -3,21 +3,25 @@ import { IconButton, List, ListItem, ListItemText } from '@mui/material';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material"
 import { useEffect, useState } from 'react';
 import CustomerTrainings from './CustomerTrainings';
+import EditCustomer from './EditCustomer';
+import DeleteCustomer from './DeleteCustomer';
+import AddTraining from './AddTraining';
+
+
+//DisplayCustomer returns Button that opens Dialog when pressed
+//Dialog shows customer's information of what that button referes
+//Dialog also renders CustomerTrainings component that shows customer's training in droplist,
+//EditCustomer component that lets user edit that customer's information and
+//DeleteCustomer component that deletes the customer from database
+//all rest method functions that these components uses are defined in this component
 
 export default function DisplayCustomer(props) {
     useEffect(() => fetchCustomersTrainingData(), [])
 
     const [open, setOpen] = useState(false)
-    const [open2, setOpen2] = useState(false)
-
     const [customer, setCustomer] = useState(props.customer)
+    const [customerURL, setCustomerURL] = useState(props.customer.links[0].href)
     const [trainings, setTrainings] = useState([])
-
-
-
-    const x = () => {
-        console.log(trainings)
-    }
 
     const fetchCustomersTrainingData = () => {
         fetch(customer.links[2].href)
@@ -25,6 +29,37 @@ export default function DisplayCustomer(props) {
         .then(resData => setTrainings(resData.content))
         .catch(err => console.error(err))
     }
+
+    const editCustomer = (newCustomer) => {
+        fetch(customer.links[0].href, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newCustomer)
+        })
+        .catch(err => console.error(err))
+        .then(res => props.fetchCustomersData())
+        .then(setCustomer(newCustomer))
+    }
+
+    const deleteCustomer = () => {
+        fetch(customer.links[0].href, {method: 'DELETE'})
+        .catch(err => console.error(err))
+        .then(res => props.fetchCustomersData())
+        .then(setOpen(false))
+    }
+
+    const addTraining = (training) => {
+        fetch('https://traineeapp.azurewebsites.net/api/trainings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(training)
+        })
+        .then(res => props.fetchCustomersData())
+        .then(res => fetchCustomersTrainingData())
+        .catch(err => console.error(err))
+    }
+
+    
 
     
 
@@ -37,10 +72,10 @@ export default function DisplayCustomer(props) {
             </div>
             <div>
             <Dialog open={open} onClose={() => setOpen(false)}>
-                    <DialogTitle>testi</DialogTitle>
+                    <DialogTitle>{customer.firstname + " " + customer.lastname}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Add new customer
+                            Customer information
                         </DialogContentText>
                         <TextField
                             autoFocus
@@ -60,59 +95,49 @@ export default function DisplayCustomer(props) {
                             fullWidth
                             variant="standard"
                         />
-                        {/* <List>
-                            <ListItem>
-                                <ListItemText primary="1"/>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="2"/>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="3"/>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="4"/>
-                            </ListItem>
-                        </List> */}
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="address"
+                            value={
+                                customer.streetaddress +
+                                ", " +
+                                customer.city +
+                                " " +
+                                customer.postcode}
+                            label="Address"
+                            fullWidth
+                            variant="standard"
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="email"
+                            value={customer.email}
+                            label="Email"
+                            fullWidth
+                            variant="standard"
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="phone"
+                            value={customer.phone}
+                            label="Phone"
+                            fullWidth
+                            variant="standard"
+                        />
                         <CustomerTrainings trainings={trainings}/>
+                        <AddTraining customerURL={customerURL} customer={customer} addTraining={addTraining}/>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setOpen(false)}>Cancel</Button>
-                        <Button onClick={x}>x</Button>
-                        <Button onClick={() => {setOpen(false); setOpen2(true)}}>asd</Button>
+                        <DeleteCustomer deleteCustomer={deleteCustomer}/>
+                        <EditCustomer editCustomer={editCustomer} customer={customer}/>
                     </DialogActions>
                 </Dialog>
             </div>
             <div>
-            <Dialog open={open2} onClose={() => setOpen2(false)}>
-                    <DialogTitle>testi</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Add new customer
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            name="firstname"
-                            value="123"
-                            label="First name"
-                            fullWidth
-                            variant="standard"
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            name="lastname"
-                            value="123"
-                            label="Last name"
-                            fullWidth
-                            variant="standard"
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpen2(false)}>Cancel</Button>
-                    </DialogActions>
-                </Dialog>
             </div>
             
         </div>

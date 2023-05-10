@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 import MaterialReactTable from 'material-react-table';
 import dayjs from "dayjs";
+import SelectCustomer from "./SelectCustomer";
+import DisplayTraining from "./DisplayTraining";
 
 
 //Trainings component is pretty much the same as Customers component
-//At this stage of this application there is no option to add new training
+//Training return table of training from database
+//In Table is SelectCustomer component that return button for first selecting customer and adding new training 
+//Left in row is button (from Displaytraining component) that opens all info of training and lets user edit and delete the training
 export default function Trainings() {
     const [trainings, setTrainings] = useState([])
     useEffect(() => fetchTrainingsData(), [])
@@ -20,7 +24,8 @@ export default function Trainings() {
     //and compining customers first and last name
     const columns = [
         {accessorKey: 'activity', header: 'Activity'},
-        {accessorFn: (row) => `${row.customer.firstname} ${row.customer.lastname}`, id: 'customer', header: 'Customer name'},
+        {accessorKey: 'customer.firstname', header: 'First Name'},
+        {accessorKey: 'customer.lastname', header: 'Last Name'},
         {accessorFn: (row) => dayjs(row.date).format('DD.MM.YYYY hh:mm'), id: 'date', header: 'Date'}
     ]
 
@@ -28,6 +33,9 @@ export default function Trainings() {
         <MaterialReactTable
             columns={columns}
             data={trainings}
+            renderTopToolbarCustomActions={() => <SelectCustomer fetchTrainingsData={fetchTrainingsData}/>}
+            enableRowActions
+            renderRowActions={({row}) => (<DisplayTraining fetchTrainingsData={fetchTrainingsData} training={row.original} />)}
         />
     )
 }

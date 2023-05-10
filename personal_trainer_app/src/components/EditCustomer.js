@@ -1,67 +1,37 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material"
 import { useState } from "react"
+import { IconButton, List, ListItem, ListItemText, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField} from '@mui/material';
 
 
-//AddCustomer function returns Button component and onClick renders dialog to add new customer to the database
-//AddCustomer takes fetchCustomersData as a prop to update list with new customer's data
-export default function AddCustomer(props) {
+//EditCustomer return Button component and onClick open Dialog
+//Dialog opens TextFields with customer information and lets user modify them
+//Dialog's Edit button's handleClick calls editCustomer function from DisplayCustomer component and edits customer's information to database and rerenderes the list
 
-    //when open state is set true dialog opens (Buttons onclick)
+export default function EditCustomer(props) {
     const [open, setOpen] = useState(false)
+    const [newCustomer, setNewCustomer] = useState(props.customer)
 
-    //empty customer to define new customer data
-    const [customer, setCustomer] = useState({
-        firstname: '',
-        lastname: '',
-        streetaddress: '',
-        city: '',
-        postcode: '',
-        email: '',
-        phone: ''})
-
-    //handleInputChange changes customer state on user input in dialog
     const handleInputChange = (event) => {
-        setCustomer({...customer, [event.target.name]: event.target.value})
-      }
-    
-    //addCustomer add new customer to the database and fetches all customers data again to update the table
-    //fetchCustomersData is used as a prop from Customers
-    //customer data is also set empty that the same data doesn't show when opening dialog again and lastly sets open false to close the dialog
-    const addCustomer = () => {
-        fetch('http://traineeapp.azurewebsites.net/api/customers', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(customer)
-        })
-        .then(res => props.fetchCustomersData())
-        .catch(err => console.error(err))
-        .then(setCustomer({
-            firstname: '',
-            lastname: '',
-            streetaddress: '',
-            city: '',
-            postcode: '',
-            email: '',
-            phone: ''}))
-        .then(setOpen(false))
-
+        setNewCustomer({...newCustomer, [event.target.name]: event.target.value})
     }
-
+    const handleClick = () => {
+        props.editCustomer(newCustomer);
+        setOpen(false)
+    }
 
     return(
         <div>
-            <div>
-                <Button variant="contained" onClick={() => setOpen(true)}>add new customer</Button>
-            </div>
-            <div>
-                <Dialog open={open} onClose={() => setOpen(false)}>
-                    <DialogTitle>testi</DialogTitle>
-                    <DialogContent>
+            <Button variant="contained" onClick={() => setOpen(true)}>
+                Edit
+            </Button>
+            <Dialog open={open} onClose={() => setOpen(false)}>
+                <DialogTitle>Edit Customer</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Edit customer's information</DialogContentText>
                     <TextField
                             autoFocus
                             margin="dense"
                             name="firstname"
-                            value={customer.firstname}
+                            value={newCustomer.firstname}
                             onChange= {event => handleInputChange(event)}
                             label="First name"
                             fullWidth
@@ -71,7 +41,7 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="lastname"
-                            value={customer .lastname}
+                            value={newCustomer.lastname}
                             onChange= {event => handleInputChange(event)}
                             label="Last name"
                             fullWidth
@@ -81,7 +51,7 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="streetaddress"
-                            value={customer.streetaddress}
+                            value={newCustomer.streetaddress}
                             onChange= {event => handleInputChange(event)}
                             label="Streetaddress"
                             fullWidth
@@ -91,7 +61,7 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="city"
-                            value={customer.city}
+                            value={newCustomer.city}
                             onChange= {event => handleInputChange(event)}
                             label="City"
                             fullWidth
@@ -101,7 +71,7 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="postcode"
-                            value={customer.postcode}
+                            value={newCustomer.postcode}
                             onChange= {event => handleInputChange(event)}
                             label="Postcode"
                             fullWidth
@@ -111,7 +81,7 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="email"
-                            value={customer.email}
+                            value={newCustomer.email}
                             onChange= {event => handleInputChange(event)}
                             label="Email"
                             fullWidth
@@ -121,20 +91,18 @@ export default function AddCustomer(props) {
                             autoFocus
                             margin="dense"
                             name="phone"
-                            value={customer.phone}
+                            value={newCustomer.phone}
                             onChange= {event => handleInputChange(event)}
                             label="Phone"
                             fullWidth
                             variant="standard"
                         />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpen(false)}>Cancel</Button>
-                        <Button onClick={addCustomer}>Add</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={handleClick}>Edit</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 }

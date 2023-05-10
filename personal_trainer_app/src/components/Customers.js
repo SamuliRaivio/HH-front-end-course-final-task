@@ -4,6 +4,7 @@ import AddCustomer from './AddCustomer';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { IconButton } from '@mui/material';
 import DisplayCustomer from './DisplayCustomer';
+import ExportCustomersCSV from './ExportCustomersCSV';
 
 
 
@@ -13,6 +14,8 @@ export default function Customers() {
 
     //first the function creates customer list to store data from api 
     const [customers, setCustomers] = useState([])
+
+  
 
     //useEffect calls fetchCustomerData function that sets the data from API to customer state
     useEffect(() => fetchCustomersData(), [])
@@ -36,9 +39,14 @@ export default function Customers() {
         <MaterialReactTable
             columns={columns}
             data={customers}
-            renderTopToolbarCustomActions={() =>(<AddCustomer fetchCustomersData={fetchCustomersData}/>)}
+            renderTopToolbarCustomActions={() =>(
+                <div>
+                    <AddCustomer fetchCustomersData={fetchCustomersData}/>
+                    <ExportCustomersCSV customers={customers}/>
+                </div>
+            )}
             enableRowActions
-            renderRowActions={({row}) => (<DisplayCustomer customer={row.original}/>)}
+            renderRowActions={({row}) => (<DisplayCustomer fetchCustomersData={fetchCustomersData} customer={row.original}/>)}
         />
     )
 }
