@@ -21,7 +21,7 @@ export default function Customers() {
     useEffect(() => fetchCustomersData(), [])
 
     const fetchCustomersData = () => {
-        fetch('http://traineeapp.azurewebsites.net/api/customers')
+        fetch('https://traineeapp.azurewebsites.net/api/customers')
         .then(res => res.json())
         .then(resData => setCustomers(resData.content))
     }
