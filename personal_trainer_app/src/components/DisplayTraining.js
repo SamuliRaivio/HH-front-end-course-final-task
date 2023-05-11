@@ -74,24 +74,28 @@ export default function DisplayTraining(props) {
                         fullWidth
                         variant="standard"
                     />
+                    {"customer" in training ? 
+                    <div>
                     <TextField
-                        autoFocus
-                        margin="dense"
-                        name="customer.firstname"
-                        value={training.customer.firstname}
-                        label="Customer's first name"
-                        fullWidth
-                        variant="standard"
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        name="customer.lastname"
-                        value={training.customer.lastname}
-                        label="Customer's last name"
-                        fullWidth
-                        variant="standard"
-                    />
+                    autoFocus
+                    margin="dense"
+                    name="customer.firstname"
+                    value={training.customer.firstname}
+                    label="Customer's first name"
+                    fullWidth
+                    variant="standard"
+                />
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    name="customer.lastname"
+                    value={training.customer.lastname}
+                    label="Customer's last name"
+                    fullWidth
+                    variant="standard"
+                /></div>
+                    : <div></div>}
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Cancel</Button>

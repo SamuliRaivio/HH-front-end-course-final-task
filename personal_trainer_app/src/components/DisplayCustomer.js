@@ -9,11 +9,10 @@ import AddTraining from './AddTraining';
 
 
 //DisplayCustomer returns Button that opens Dialog when pressed
-//Dialog shows customer's information of what that button referes
-//Dialog also renders CustomerTrainings component that shows customer's training in droplist,
+//Dialog shows customer's full information 
+//Dialog also renders CustomerTrainings component that shows customer's training in droplist and lets user add new training to customer
 //EditCustomer component that lets user edit that customer's information and
 //DeleteCustomer component that deletes the customer from database
-//all rest method functions that these components uses are defined in this component
 
 export default function DisplayCustomer(props) {
     useEffect(() => fetchCustomersTrainingData(), [])
@@ -23,15 +22,23 @@ export default function DisplayCustomer(props) {
     const [customerURL, setCustomerURL] = useState(props.customer.links[0].href)
     const [trainings, setTrainings] = useState([])
 
+
+    //HTTPS fixes for netlify deployment problems
+    const fixURL = (link) => {
+        const url = new URL(link)
+        url.protocol = 'https:'
+        return url.href
+        }
+
     const fetchCustomersTrainingData = () => {
-        fetch(customer.links[2].href)
+        fetch(fixURL(customer.links[2].href))
         .then(res => res.json())
         .then(resData => setTrainings(resData.content))
         .catch(err => console.error(err))
     }
 
     const editCustomer = (newCustomer) => {
-        fetch(customer.links[0].href, {
+        fetch(fixURL(customer.links[0].href), {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newCustomer)
@@ -42,14 +49,14 @@ export default function DisplayCustomer(props) {
     }
 
     const deleteCustomer = () => {
-        fetch(customer.links[0].href, {method: 'DELETE'})
+        fetch(fixURL(customer.links[0].href), {method: 'DELETE'})
         .catch(err => console.error(err))
         .then(res => props.fetchCustomersData())
         .then(setOpen(false))
     }
 
     const addTraining = (training) => {
-        fetch('https://traineeapp.azurewebsites.net/api/trainings', {
+        fetch(fixURL('https://traineeapp.azurewebsites.net/api/trainings'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(training)

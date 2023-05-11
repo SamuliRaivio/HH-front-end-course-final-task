@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useState } from "react"
 
 
-//AddCustomer function returns Button component and onClick renders dialog to add new customer to the database
+//AddCustomer function returns Button component and onClick opens dialog to add new customer to the database
 //AddCustomer takes fetchCustomersData as a prop to update list with new customer's data
 export default function AddCustomer(props) {
 
@@ -23,12 +23,20 @@ export default function AddCustomer(props) {
     const handleInputChange = (event) => {
         setCustomer({...customer, [event.target.name]: event.target.value})
       }
+
+    
+    //HTTPS fixes for netlify deployment problems
+    const fixURL = (link) => {
+        const url = new URL(link)
+        url.protocol = 'https:'
+        return url.href
+        }
     
     //addCustomer add new customer to the database and fetches all customers data again to update the table
     //fetchCustomersData is used as a prop from Customers
     //customer data is also set empty that the same data doesn't show when opening dialog again and lastly sets open false to close the dialog
     const addCustomer = () => {
-        fetch('http://traineeapp.azurewebsites.net/api/customers', {
+        fetch(fixURL('http://traineeapp.azurewebsites.net/api/customers'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(customer)
@@ -48,6 +56,21 @@ export default function AddCustomer(props) {
     }
 
 
+    //handles cancel click that dialog closes and customer is set to default values
+    //so when openin again the given info isnt there
+    const handleCancelClick = () => {
+        setCustomer({
+            firstname: '',
+            lastname: '',
+            streetaddress: '',
+            city: '',
+            postcode: '',
+            email: '',
+            phone: ''})
+        setOpen(false)
+    }
+
+
     return(
         <div>
             <div>
@@ -58,7 +81,6 @@ export default function AddCustomer(props) {
                     <DialogTitle>testi</DialogTitle>
                     <DialogContent>
                     <TextField
-                            autoFocus
                             margin="dense"
                             name="firstname"
                             value={customer.firstname}
@@ -68,17 +90,15 @@ export default function AddCustomer(props) {
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="lastname"
-                            value={customer .lastname}
+                            value={customer.lastname}
                             onChange= {event => handleInputChange(event)}
                             label="Last name"
                             fullWidth
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="streetaddress"
                             value={customer.streetaddress}
@@ -88,7 +108,6 @@ export default function AddCustomer(props) {
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="city"
                             value={customer.city}
@@ -98,7 +117,6 @@ export default function AddCustomer(props) {
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="postcode"
                             value={customer.postcode}
@@ -108,7 +126,6 @@ export default function AddCustomer(props) {
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="email"
                             value={customer.email}
@@ -118,7 +135,6 @@ export default function AddCustomer(props) {
                             variant="standard"
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             name="phone"
                             value={customer.phone}
@@ -129,7 +145,7 @@ export default function AddCustomer(props) {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button onClick={handleCancelClick}>Cancel</Button>
                         <Button onClick={addCustomer}>Add</Button>
                     </DialogActions>
                 </Dialog>

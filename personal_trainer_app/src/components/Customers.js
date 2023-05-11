@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import MaterialReactTable from 'material-react-table';
 import AddCustomer from './AddCustomer';
-import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { IconButton } from '@mui/material';
 import DisplayCustomer from './DisplayCustomer';
 import ExportCustomersCSV from './ExportCustomersCSV';
 
 
 
 
-//Customer function return table of customer data (table made with MaterialReactTable)
+//Customers function return table of customers data (table made with MaterialReactTable)
 export default function Customers() {
 
     //first the function creates customer list to store data from api 
@@ -20,12 +18,18 @@ export default function Customers() {
     //useEffect calls fetchCustomerData function that sets the data from API to customer state
     useEffect(() => fetchCustomersData(), [])
 
-    const url = new URL('http://traineeapp.azurewebsites.net/api/customers')
-    url.protocol = 'https:'
 
+
+
+    //HTTPS fixes for netlify deployment problems
+    const fixURL = (link) => {
+        const url = new URL(link)
+        url.protocol = 'https:'
+        return url.href
+        }
 
     const fetchCustomersData = () => {
-        fetch('url.href')
+        fetch(fixURL('http://traineeapp.azurewebsites.net/api/customers'))
         .then(res => res.json())
         .then(resData => setCustomers(resData.content))
     }
@@ -43,13 +47,15 @@ export default function Customers() {
         <MaterialReactTable
             columns={columns}
             data={customers}
-            renderTopToolbarCustomActions={() =>(
-                <div>
-                    <AddCustomer fetchCustomersData={fetchCustomersData}/>
+            renderTopToolbarCustomActions={() =>( //actions for table toolbar, Addcustomer for adding new customer, ExportCustomerCSV to download customerdata
+                <div> 
+                    <AddCustomer fetchCustomersData={fetchCustomersData}/> 
                     <ExportCustomersCSV customers={customers}/>
                 </div>
             )}
             enableRowActions
+            //renderRowActions ads action to each row, DisplayCustomer rendern button to open dialog that contains all customer information and actions 
+            //DisplayCustomer takes fetchCustomersData as a prop if customer is edited it renders customers again, row.original as a prop is that row's customer as an object
             renderRowActions={({row}) => (<DisplayCustomer fetchCustomersData={fetchCustomersData} customer={row.original}/>)}
         />
     )

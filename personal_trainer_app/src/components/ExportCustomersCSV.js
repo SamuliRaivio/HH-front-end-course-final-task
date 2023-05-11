@@ -9,11 +9,12 @@ import { CSVLink } from 'react-csv';
 
 
 
-
+//Renders button that download customers data as csv file
 export default function ExportCustomersCSV(props) {
 
     const [customers, setCustomers] = useState([])
 
+    
     const headers = [
         {label: "First name", key: "firstname"},
         {label: "Last name", key: "lastname"},

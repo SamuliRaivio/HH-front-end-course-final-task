@@ -1,9 +1,11 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material"
-import { DatePicker, DateTimePicker, LocalizationProvider, TimeField } from "@mui/x-date-pickers"
+import { DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers"
 import { useState } from "react"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from "dayjs";
 
+
+//AddTraining renders button and onclick open dialog
+//Dialog asks data to new training and adds it to database
 export default function AddTraining(props) {
 
     const [open, setOpen] = useState(false)
@@ -14,29 +16,21 @@ export default function AddTraining(props) {
         customer: ""
     })
 
+    const customer = props.customerURL
+
     
     const handleInputChange = (event) => {
         setTraining({...training, [event.target.name]: event.target.value})
     }
 
-    
-
-    
-
     const handleClick = () => {
-        const newTraining = ({...training, customer: props.customerURL})
+        const newTraining = ({...training, customer: customer})
         props.addTraining(newTraining)
         setOpen(false)
         
         
 
     }
-
-    
-
-
-
-
 
     return(
         <div>
@@ -76,7 +70,6 @@ export default function AddTraining(props) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => console.log(training)}>teast</Button>
                     <Button onClick={() => setOpen(false)}>Cancel</Button>
                     <Button onClick={handleClick}>Add</Button>
                 </DialogActions>

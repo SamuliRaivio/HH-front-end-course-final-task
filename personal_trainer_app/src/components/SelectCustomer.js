@@ -15,15 +15,21 @@ export default function SelectCustomer(props) {
     const [open, setOpen] = useState(false)
     const [disabled, setDisabled] = useState(false)
 
+    //HTTPS fixes for netlify deployment problems
+    const fixURL = (link) => {
+        const url = new URL(link)
+        url.protocol = 'https:'
+        return url.href
+        }
 
     const fetchCustomersData = () => {
-        fetch('http://traineeapp.azurewebsites.net/api/customers')
+        fetch(fixURL('http://traineeapp.azurewebsites.net/api/customers'))
         .then(res => res.json())
         .then(resData => setCustomers(resData.content))
     }
 
     const addTraining = (training) => {
-        fetch('https://traineeapp.azurewebsites.net/api/trainings', {
+        fetch(fixURL('https://traineeapp.azurewebsites.net/api/trainings'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(training)
@@ -37,7 +43,7 @@ export default function SelectCustomer(props) {
 
     const handleChange = (event) => {
         
-        setCustomerURL(event.target.value.links[0].href)
+        setCustomerURL(fixURL(event.target.value.links[0].href))
         setCustomer(event.target.value)
         setDisabled(true)
     }
