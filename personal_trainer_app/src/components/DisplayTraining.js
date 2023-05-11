@@ -30,6 +30,7 @@ export default function DisplayTraining(props) {
         .catch(err => console.error(err))
         .then(res => props.fetchTrainingsData())
         .then(setTraining(newTraining))
+        .then(setOpen(false))
     }
 
 

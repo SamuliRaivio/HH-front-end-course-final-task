@@ -33,8 +33,6 @@ export default function Calendar() {
 
     return(
         <div>
-            <Button onClick={()=> console.log(trainings[0].date)}>asd</Button>
-            <Button onClick={()=> console.log(dayjs(trainings[0].date).add(30, 'm').toISOString())}>asd2</Button>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin]}
                 initialView="timeGridWeek"

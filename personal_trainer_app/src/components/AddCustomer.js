@@ -78,7 +78,7 @@ export default function AddCustomer(props) {
             </div>
             <div>
                 <Dialog open={open} onClose={() => setOpen(false)}>
-                    <DialogTitle>testi</DialogTitle>
+                    <DialogTitle>Add new customer</DialogTitle>
                     <DialogContent>
                     <TextField
                             margin="dense"
@@ -146,7 +146,7 @@ export default function AddCustomer(props) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCancelClick}>Cancel</Button>
-                        <Button onClick={addCustomer}>Add</Button>
+                        <Button variant="contained" onClick={addCustomer}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </div>

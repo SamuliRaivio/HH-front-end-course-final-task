@@ -34,7 +34,6 @@ export default function DataChart() {
 
     return(
         <div style={{ width: '100%', height: 600 }}>
-        <Button onClick={() => console.log(newArray)}>testi</Button>
         <ResponsiveContainer>
         <BarChart
           data={newArray}
